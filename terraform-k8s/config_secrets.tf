@@ -1,4 +1,4 @@
-# ConfigMap لبيانات الإعدادات
+# ConfigMap لبيانات الإعدادات العامة
 resource "kubernetes_config_map" "app_config" {
   metadata {
     name = "educommunity-config"
@@ -10,15 +10,16 @@ resource "kubernetes_config_map" "app_config" {
   }
 }
 
-# Secret للمعلومات الحساسة
+# Secret للمعلومات الحساسة (باستخدام string_data للتشفير التلقائي)
 resource "kubernetes_secret" "app_secret" {
   metadata {
     name = "educommunity-secret"
   }
 
-  data = {
-    JWT_SECRET  = "educommunity_jwt_secret_key_2026"
-    MONGODB_URI = "mongodb://mongo-service:27017/educommunity"
+  # string_data بتخليك تكتب النصوص عادية وTerraform يحولها لـ Base64 لـ Kubernetes تلقائياً
+string_data = {
+JWT_SECRET  = "educommunity_jwt_secret_key_2026"
+MONGODB_URI = "mongodb://mongo-service:27017/educommunity"
   }
 
   type = "Opaque"

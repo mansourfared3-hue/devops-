@@ -24,7 +24,6 @@ resource "kubernetes_deployment" "frontend" {
       }
 
       spec {
-        # ربط الـ Secret لتمكين سحب الصور الخاصة
         image_pull_secrets {
           name = "regcred"
         }
