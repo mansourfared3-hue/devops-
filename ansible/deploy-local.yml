@@ -1,0 +1,35 @@
+---
+- name: Automate Infrastructure & Kubernetes Deployment
+  hosts: localhost
+  connection: local
+
+  tasks:
+    # 1. التأكد من تشغيل Minikube
+    - name: Ensure Minikube is running
+      command: minikube.exe status
+      register: minikube_status
+      failed_when: false
+      changed_when: false
+
+    - name: Start Minikube if it is stopped
+      command: minikube.exe start --driver=docker
+      when: "'Running' not in minikube_status.stdout"
+
+    # 2. تشغيل Terraform
+    - name: Apply Terraform Configuration
+      command: terraform.exe apply --auto-approve
+      args:
+        chdir: "../terraform-k8s"
+
+    # 3. عمل Restart للـ Deployments
+    - name: Rollout restart Kubernetes Deployments
+      command: kubectl.exe rollout restart deployment backend-deployment frontend-deployment
+
+    # 4. طباعة حالة الـ Pods
+    - name: Get running Pods status
+      command: kubectl.exe get pods
+      register: pods_output
+
+    - name: Display Pods
+      debug:
+        msg: "{{ pods_output.stdout_lines }}"

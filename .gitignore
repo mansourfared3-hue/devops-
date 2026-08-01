@@ -44,3 +44,7 @@ Thumbs.db
 *.njsproj
 *.sln
 *.swp
+*.exe
+*.tfstate
+*.tfstate.backup
+.terraform/
